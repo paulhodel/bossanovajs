@@ -41,7 +41,12 @@ class PostgreConnection {
    */
   async query(value) {
     return this.connection.query(value)
-      .then((result) => result.rows)
+      .then(({ rows, rowCount }) => {
+        if (rows.length === 0) {
+          return rowCount
+        }
+        return rows
+      })
       .catch((err) => {
         throw new Error(err.message)
       });

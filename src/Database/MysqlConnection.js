@@ -36,7 +36,12 @@ class MysqlConnection {
    */
   async query(value) {
     return this.connection.query(value)
-      .then((result) => result[0])
+      .then((result) => {
+        if (result[0].affectedRows || result[0].affectedRows === 0) {
+          return result[0].affectedRows
+        }
+        return result[0];
+      })
       .catch((err) => {
         throw new Error(err.message)
       });
