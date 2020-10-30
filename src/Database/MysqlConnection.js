@@ -1,6 +1,10 @@
 const mysql = require('mysql2/promise');
 
 class MysqlConnection {
+  /**
+   * @private
+   * @property {object} - The connection to the mysql database.
+   */
   connection;
 
   /**
@@ -26,12 +30,16 @@ class MysqlConnection {
   }
 
   /**
-   * This method executes sql queries
+   * This method executes sql queries.
    * @public
    * @param {string} value - The sql to be executed.
    */
   async query(value) {
-    return this.connection.query(value);
+    return this.connection.query(value)
+      .then((result) => result[0])
+      .catch((err) => {
+        throw new Error(err.message)
+      });
   }
 }
 

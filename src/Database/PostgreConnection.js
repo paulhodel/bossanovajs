@@ -1,6 +1,10 @@
 const { Client } = require('pg');
 
 class PostgreConnection {
+  /**
+   * @private
+   * @property {object} - The connection to the postgre database.
+   */
   connection;
 
   constructor() {
@@ -31,12 +35,16 @@ class PostgreConnection {
   }
 
   /**
-   * This method executes sql queries
+   * This method executes sql queries.
    * @public
    * @param {string} value - The sql to be executed.
    */
   async query(value) {
-    return this.connection.query(value);
+    return this.connection.query(value)
+      .then((result) => result.rows)
+      .catch((err) => {
+        throw new Error(err.message)
+      });
   }
 }
 

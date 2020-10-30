@@ -2,6 +2,10 @@ const PostgreConnection = require('./PostgreConnection');
 const MysqlConnection = require('./MysqlConnection');
 
 class Connection {
+  /**
+   * @private
+   * @property {object} - The instance of the class that has a connection to the database.
+   */
   database;
 
   constructor() {
@@ -35,7 +39,7 @@ class Connection {
   }
 
   /**
-   * This method executes sql queries
+   * This method executes sql queries.
    * @public
    * @param {string} value - The sql to be executed.
    */
