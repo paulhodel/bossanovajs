@@ -1,8 +1,13 @@
 const { Client } = require('pg');
 
 class PostgreConnection {
+  connection;
+
+  constructor() {
+  }
+
   /**
-   * This method creates and returns a connection to the postgre database.
+   * This method establishes a connection to the postgres database.
    * @public
    * @param {object} dbSettings - The database settings.
    * @param {string} dbSettings.host - The database host.
@@ -11,7 +16,7 @@ class PostgreConnection {
    * @param {string} dbSettings.password - The database password.
    * @param {string} dbSettings.name - The database name.
    */
-  static async getConnection({ host, port, user, password, name }) {
+  async getConnection({ host, port, user, password, name }) {
     const client = new Client({
       host,
       port,
@@ -22,7 +27,16 @@ class PostgreConnection {
 
     await client.connect();
 
-    return client;
+    this.connection = client;
+  }
+
+  /**
+   * This method executes sql queries
+   * @public
+   * @param {string} value - The sql to be executed.
+   */
+  async query(value) {
+    return this.connection.query(value);
   }
 }
 

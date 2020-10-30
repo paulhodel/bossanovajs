@@ -2,6 +2,11 @@ const PostgreConnection = require('./PostgreConnection');
 const MysqlConnection = require('./MysqlConnection');
 
 class Connection {
+  database;
+
+  constructor() {
+  }
+
   /**
    * This method identifies the type of the database and returns a connection to it.
    * @public
@@ -13,16 +18,29 @@ class Connection {
    * @param {string} dbSettings.password - The database password.
    * @param {string} dbSettings.name - The database name.
    */
-  static async getConnection({ type, ...dbSettings }) {
+  async getConnection({ type, ...dbSettings }) {
     if (type === 'postgre') {
-      return PostgreConnection.getConnection(dbSettings);
+      this.database = new PostgreConnection();
     }
 
     if (type === 'mysql') {
-      return MysqlConnection.getConnection(dbSettings);
+      this.database = new MysqlConnection();
     }
 
-    throw new Error('Unrecognized type');
+    if (this.database === null) {
+      throw new Error('Unrecognized type');
+    } else {
+      await this.database.getConnection(dbSettings);
+    }
+  }
+
+  /**
+   * This method executes sql queries
+   * @public
+   * @param {string} value - The sql to be executed.
+   */
+  async query(value) {
+    return this.database.query(value);
   }
 }
 
