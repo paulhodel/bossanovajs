@@ -1,6 +1,4 @@
-const mysql = require('mysql2/promise');
-
-class MysqlConnection {
+class MysqlAdapter {
   /**
    * @private
    * @property {object} - The connection to the mysql database.
@@ -18,6 +16,8 @@ class MysqlConnection {
    * @param {string} dbSettings.name - The database name.
    */
   async getConnection({ host, port, user, password, name }) {
+    const mysql = require('mysql2/promise');
+
     const connection = await mysql.createConnection({
       host,
       port,
@@ -26,26 +26,29 @@ class MysqlConnection {
       database: name
     });
 
+    connection.config.namedPlaceholders = true;
+
     this.connection = connection;
   }
 
   /**
    * This method executes sql queries.
    * @public
-   * @param {string} value - The sql to be executed.
+   * @param {string} query - The sql to be executed.
+   * @param {object} values - The values to be inserted in the query.
    */
-  async query(value) {
-    return this.connection.query(value)
+  async query(query, values) {
+    return this.connection.query(query, values)
       .then((result) => {
         if (result[0].affectedRows || result[0].affectedRows === 0) {
-          return result[0].affectedRows
+          return result[0].affectedRows;
         }
         return result[0];
       })
       .catch((err) => {
-        throw new Error(err.message)
+        throw new Error(err.message);
       });
   }
 }
 
-module.exports = MysqlConnection;
+module.exports = MysqlAdapter;

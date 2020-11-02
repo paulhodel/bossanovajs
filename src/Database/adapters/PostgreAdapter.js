@@ -1,6 +1,4 @@
-const { Client } = require('pg');
-
-class PostgreConnection {
+class PostgreAdapter {
   /**
    * @private
    * @property {object} - The connection to the postgre database.
@@ -21,6 +19,8 @@ class PostgreConnection {
    * @param {string} dbSettings.name - The database name.
    */
   async getConnection({ host, port, user, password, name }) {
+    const { Client } = require('pg');
+
     const client = new Client({
       host,
       port,
@@ -37,20 +37,27 @@ class PostgreConnection {
   /**
    * This method executes sql queries.
    * @public
-   * @param {string} value - The sql to be executed.
+   * @param {string} query - The sql to be executed.
+   * @param {object} values - The values to be inserted in the query.
    */
-  async query(value) {
-    return this.connection.query(value)
+  async query(query, values) {
+    const valuesArray = Object.entries(values).map((pair, index) => {
+      query = query.replace(`:${pair[0]}`, `$${index + 1}`);
+
+      return pair[1];
+    })
+
+    return this.connection.query(query, valuesArray)
       .then(({ rows, rowCount }) => {
         if (rows.length === 0) {
-          return rowCount
+          return rowCount;
         }
-        return rows
+        return rows;
       })
       .catch((err) => {
-        throw new Error(err.message)
+        throw new Error(err.message);
       });
   }
 }
 
-module.exports = PostgreConnection;
+module.exports = PostgreAdapter;
