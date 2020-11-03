@@ -5,6 +5,7 @@ class Query {
   query;
   arguments;
   whereText;
+  params;
 
   static debug = false;
 
@@ -14,6 +15,7 @@ class Query {
 
   /**
    * Inserts values into a sql query.
+   * @private
    * @param {string} query - The query where the values should be inserted.
    * @param {Object} statements - the values to be inserted.
    */
@@ -35,7 +37,7 @@ class Query {
   }
 
   /**
-   * Keep the table reference name to assembly the query.
+   * Keep the table reference name to assembly the query
    * @param {string} tableName - Table name.
    */
   table(tableName) {
@@ -82,6 +84,27 @@ class Query {
     const query = 'INSERT INTO ' + this.tableName + ' (' + names + ') VALUES(' + values + ')';
 
     this.query = this.prepareStatement(query, this.columns);
+
+    return this;
+  }
+
+  /**
+   * Bind params and save query.
+   * @param {string} query - Query to be changed.
+   * @param {Object} value - Values to be inserted in the query.
+   */
+  bindParam(query, value) {
+    if (!this.params) {
+      this.params = [];
+    }
+
+    if (!this.arguments) {
+      this.arguments = [];
+    }
+
+    query = this.prepareStatement(query, value);
+
+    this.arguments.push(query);
 
     return this;
   }
