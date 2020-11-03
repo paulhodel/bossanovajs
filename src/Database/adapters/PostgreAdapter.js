@@ -38,16 +38,9 @@ class PostgreAdapter {
    * This method executes sql queries.
    * @public
    * @param {string} query - The sql to be executed.
-   * @param {object} values - The values to be inserted in the query.
    */
-  async query(query, values) {
-    const valuesArray = Object.entries(values).map((pair, index) => {
-      query = query.replace(`:${pair[0]}`, `$${index + 1}`);
-
-      return pair[1];
-    })
-
-    return this.connection.query(query, valuesArray)
+  async query(query) {
+    return this.connection.query(query)
       .then(({ rows, rowCount }) => {
         if (rows.length === 0) {
           return rowCount;

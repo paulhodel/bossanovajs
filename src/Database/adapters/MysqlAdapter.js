@@ -35,10 +35,9 @@ class MysqlAdapter {
    * This method executes sql queries.
    * @public
    * @param {string} query - The sql to be executed.
-   * @param {object} values - The values to be inserted in the query.
    */
-  async query(query, values) {
-    return this.connection.query(query, values)
+  async query(query) {
+    return this.connection.query(query)
       .then((result) => {
         if (result[0].affectedRows || result[0].affectedRows === 0) {
           return result[0].affectedRows;
