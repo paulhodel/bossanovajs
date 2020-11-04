@@ -11,7 +11,7 @@ class Query {
   havingStatement;
   orderStatement;
   limitStatement;
-  offsetStatement
+  offsetStatement;
 
   static debug = false;
 
@@ -350,6 +350,45 @@ class Query {
    */
   getSelect() {
     this.select();
+
+    return this.query;
+  }
+
+  /**
+   * Assembly a new UPDATE usign all definitions.
+   */
+  update() {
+    let updateStatement = '';
+
+    Object.entries(this.columns).forEach((column) => {
+      if (updateStatement !== '') {
+        updateStatement += ', ';
+      }
+
+      console.log(column)
+      updateStatement += `${column[0]} = ${column[1]}`;
+    })
+
+    this.query = `UPDATE ${this.tableName} SET ${updateStatement}`;
+
+    if (!this.whereText) {
+      if (this.arguments && this.arguments.length) {
+        this.where();
+      }
+    }
+
+    if (this.whereText) {
+      this.query += ` WHERE ${this.whereText}`;
+    }
+
+    return this;
+  }
+
+  /**
+   * Assembly a new UPDATE usign all definitions and return the complete UPDATE SQL.
+   */
+  getUpdate() {
+    this.update();
 
     return this.query;
   }
