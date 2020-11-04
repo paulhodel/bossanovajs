@@ -54,7 +54,7 @@ class Query {
 
   /**
    * Keep the colums names to assembly the query.
-   * @param {string | Object} columns - String for Select or object for Insert and Updates.
+   * @param {string | string[] | Object} columns - String or array of strings for Select, and object for Insert and Updates.
    */
   column(columns) {
     this.columns = columns;
@@ -262,6 +262,74 @@ class Query {
     this.offsetStatement = value;
 
     return this;
+  }
+
+  /**
+   * Assembly a new SELECT usign all definitions.
+   */
+  select() {
+    if (!this.columns) {
+      this.query = 'SELECT *';
+    } else {
+      if (Array.isArray(this.columns)) {
+        this.columns = this.columns.join(', ');
+      }
+
+      this.query = `SELECT ${this.columns}`;
+    }
+
+    if (!this.whereText) {
+      if (this.arguments && this.arguments.length) {
+        this.where();
+      }
+    }
+
+    if (this.tableName) {
+      this.query += ` FROM ${this.tableName}`;
+    }
+
+    if (this.join) {
+      this.query += `${this.join}`;
+    }
+
+    if (this.whereText) {
+      this.query += ` WHERE ${this.whereText}`;
+    }
+
+    if (this.groupStatement) {
+      this.query += ` GROUP BY ${this.groupStatement}`;
+    }
+
+    if (this.havingStatement) {
+      this.query += ` HAVING ${this.havingStatement}`;
+    }
+
+    if (this.orderStatement) {
+      this.query += ` ORDER BY ${this.orderStatement}`;
+    }
+
+    if (this.limitStatement) {
+      this.query += ` LIMIT ${this.limitStatement}`;
+    }
+
+    if (this.offsetStatement) {
+      this.query += ` OFFSET ${this.offsetStatement}`;
+    }
+
+    return this;
+  }
+
+  async execute(debug = 0) {
+    if (!this.query) {
+      this.select();
+    }
+
+    let result;
+
+    let error;
+
+    console.log(this.query)
+    return this.instance.query(this.query)
   }
 }
 
