@@ -95,6 +95,15 @@ class Query {
   }
 
   /**
+   * Assembly a new INSERT usign all definitions and return the complete INSERT SQL.
+   */
+  getInsert() {
+    this.insert();
+
+    return this.query;
+  }
+
+  /**
    * Bind params and save query.
    * @param {string} query - Query to be changed.
    * @param {Object} value - Values to be inserted in the query.
@@ -265,6 +274,23 @@ class Query {
   }
 
   /**
+   * Define a manual query to be executed.
+   * @param {string} query - Query to be executed.
+   */
+  setQuery(query) {
+    this.query = query;
+
+    return this;
+  }
+
+  /**
+   * Return the query already in this instance.
+   */
+  getQuery() {
+    return this.query ? this.query : '';
+  }
+
+  /**
    * Assembly a new SELECT usign all definitions.
    */
   select() {
@@ -319,17 +345,13 @@ class Query {
     return this;
   }
 
-  async execute(debug = 0) {
-    if (!this.query) {
-      this.select();
-    }
+  /**
+   * Assembly a new SELECT usign all definitions and return the complete SELECT SQL.
+   */
+  getSelect() {
+    this.select();
 
-    let result;
-
-    let error;
-
-    console.log(this.query)
-    return this.instance.query(this.query)
+    return this.query;
   }
 }
 
