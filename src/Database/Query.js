@@ -6,6 +6,7 @@ class Query {
   arguments;
   whereText;
   params;
+  join;
 
   static debug = false;
 
@@ -112,7 +113,7 @@ class Query {
   /**
    * Keep the array of arguments to assembly the where in the query.
    * @param {string} column - Column name.
-   * @param {number | string} value - Comparison or the value to be compared.
+   * @param {number | string} value - Comparation or the value to be compared.
    * @param {string} operator - Operator (default is an equal).
    */
   argument(column, value, operator = '=') {
@@ -159,6 +160,51 @@ class Query {
 
       this.whereText = text;
     }
+
+    return this;
+  }
+
+  /**
+   * Keep the left join string to assembly the query.
+   * @param {string} tableName - Table name to be used in the join.
+   * @param {string} comparation - Comparation to be used at the join.
+   */
+  leftJoin(tableName, comparation) {
+    if (!this.join) {
+      this.join = '';
+    }
+
+    this.join += ` LEFT JOIN ${tableName} ON (${comparation})`;
+
+    return this;
+  }
+
+  /**
+   * Keep the right join string to assembly the query.
+   * @param {string} tableName - Table name to be used in the join.
+   * @param {string} comparation - Comparation to be used at the join.
+   */
+  rightJoin(tableName, comparation) {
+    if (!this.join) {
+      this.join = '';
+    }
+
+    this.join += ` RIGHT JOIN ${tableName} ON (${comparation})`;
+
+    return this;
+  }
+
+  /**
+   * Keep the inner join string to assembly the query.
+   * @param {string} tableName - Table name to be used in the join.
+   * @param {string} comparation - Comparation to be used at the join.
+   */
+  innerJoin(tableName, comparation) {
+    if (!this.join) {
+      this.join = '';
+    }
+
+    this.join += ` INNER JOIN ${tableName} ON (${comparation})`;
 
     return this;
   }
