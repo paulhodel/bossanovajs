@@ -7,6 +7,11 @@ class Query {
   whereText;
   params;
   join;
+  groupStatement;
+  havingStatement;
+  orderStatement;
+  limitStatement;
+  offsetStatement
 
   static debug = false;
 
@@ -205,6 +210,56 @@ class Query {
     }
 
     this.join += ` INNER JOIN ${tableName} ON (${comparation})`;
+
+    return this;
+  }
+
+  /**
+   * Keep the group by string to assembly the query.
+   * @param {string} value - Column(s) name(s) to be used in the 'group by' statement.
+   */
+  group(value) {
+    this.groupStatement = value;
+
+    return this;
+  }
+
+  /**
+   * Keep the having by string to assembly the query.
+   * @param {string} value - Condition to be used in the 'having' statement.
+   */
+  having(value) {
+    this.havingStatement = value;
+
+    return this;
+  }
+
+  /**
+   * Keep the order by string to assembly the query.
+   * @param {string} value - Column(s) name(s) to be used in the 'order by' statement.
+   */
+  order(value) {
+    this.orderStatement = value;
+
+    return this;
+  }
+
+  /**
+   * Keep the limit by string to assembly the query.
+   * @param {number} value - Number to be used in the 'limit' statement.
+   */
+  limit(value) {
+    this.limitStatement = value;
+
+    return this;
+  }
+
+  /**
+   * Keep the offset by string to assembly the query.
+   * @param {number} value - Number to be used in the 'offset' statement.
+   */
+  offset(value) {
+    this.offsetStatement = value;
 
     return this;
   }
