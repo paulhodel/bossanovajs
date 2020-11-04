@@ -433,6 +433,14 @@ class Query {
     console.log(this.query)
     return this.instance.query(this.query)
   }
+
+  /**
+   * Get the primary key from the defined table.
+   * @param {string} table - table name.
+   */
+  async getPrimaryKey(table) {
+    return this.instance.getPrimaryKey(table);
+  }
 }
 
 module.exports = Query
