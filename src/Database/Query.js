@@ -392,6 +392,47 @@ class Query {
 
     return this.query;
   }
+
+  /**
+   * Assembly a new DELETE usign all definitions.
+   */
+  delete() {
+    this.query = `DELETE FROM ${this.tableName}`;
+
+    if (!this.whereText) {
+      if (this.arguments && this.arguments.length) {
+        this.where();
+      }
+    }
+
+    if (this.whereText) {
+      this.query += ` WHERE ${this.whereText}`;
+    }
+
+    return this;
+  }
+
+  /**
+   * Assembly a new DELETE usign all definitions and return the complete DELETE SQL.
+   */
+  getDelete() {
+    this.delete();
+
+    return this.query;
+  }
+
+  async execute(debug = 0) {
+    if (!this.query) {
+      this.select();
+    }
+
+    let result;
+
+    let error;
+
+    console.log(this.query)
+    return this.instance.query(this.query)
+  }
 }
 
 module.exports = Query
