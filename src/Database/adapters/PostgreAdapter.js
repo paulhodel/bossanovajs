@@ -51,6 +51,15 @@ class PostgreAdapter {
         throw new Error(err.message);
       });
   }
+
+  async getPrimaryKey(table) {
+    return this.query(`
+      SELECT a.attname as column_name
+      FROM pg_index i
+      JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
+      WHERE i.indrelid = '${table}'::regclass AND i.indisprimary;
+    `)
+  }
 }
 
 module.exports = PostgreAdapter;
