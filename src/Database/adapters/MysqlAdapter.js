@@ -56,7 +56,11 @@ class MysqlAdapter {
     JOIN information_schema.key_column_usage k
     USING(constraint_name,table_schema,table_name)
     WHERE t.constraint_name='PRIMARY' AND t.table_schema='${this.connection.connection.config.database}' AND t.table_name='${table}';
-    `)
+    `);
+  }
+
+  async lastInsertedId() {
+    return this.query('SELECT LAST_INSERT_ID();').then((result) => result[0]['LAST_INSERT_ID()']);
   }
 }
 
